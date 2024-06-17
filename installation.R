@@ -24,7 +24,27 @@ glimpse(data_code)
 all_indicators <- rt_all("PMID323740764.txt")
 glimpse(all_indicators)
 
-#THEORETICAL
-files <- list.files(path="/Users/ewood/transparency/data", pattern="*.txt", full.names=TRUE, recursive=FALSE)
+#Convert PDF files to txt
+files <- list.files(path="/Users/ewood/transparency/data", pattern="*.pdf", full.names=TRUE, recursive=FALSE)
+lapply(files, function(file) {
+  article_txt <- rt_read_pdf(file)
+  cat(substr(article_txt, start = 1, stop = 200))
+  file_name <- fs::path_file(file) |>
+  tools::file_path_sans_ext() |>
+  trimws() |>
+  paste(".txt")
+  print(file_name)
+  file_path <- fs::path_dir(file)
+  #print(file_path)
+  full_file_path <- paste(file_path, file_name)
+  #print(full_file_path)
+  write(article, full_file_path)
+})
 
+#Read information from txt files
+files <- list.files(path="/Users/ewood/transparency/data", pattern="*.txt", full.names=TRUE, recursive=FALSE)
+lapply(files, function(x) {
+  all_indicators <- rt_all(x)
+  glimpse(all_indicators)
+})
 
